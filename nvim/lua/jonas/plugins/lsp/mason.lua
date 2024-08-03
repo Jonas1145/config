@@ -31,9 +31,9 @@ return {
         "html",
         "cssls",
         "tailwindcss",
-        "svelte",
+        -- "svelte",
         "lua_ls",
-        "graphql",
+        -- "graphql",
       },
     })
 
