@@ -4,7 +4,7 @@ return {
   dependencies = {
     "hrsh7th/cmp-nvim-lsp",
     { "antosha417/nvim-lsp-file-operations", config = true },
-    { "folke/neodev.nvim", opts = {} },
+    { "folke/neodev.nvim",                   opts = {} },
   },
   config = function()
     -- import lspconfig plugin
@@ -16,8 +16,28 @@ return {
     -- import cmp-nvim-lsp plugin
     local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
-    local keymap = vim.keymap -- for conciseness
+    local keymap = vim.keymap              -- for conciseness
 
+    local function CustomGoToDefinition()
+      local params = vim.lsp.util.make_position_params()
+      
+      vim.lsp.buf_request(0, 'textDocument/definition', params, function(err, result, ctx, config)
+        if result then
+          local filtered_result = vim.tbl_filter(function(item)
+            return not string.match(item.targetUri or item.uri, "index%.d%.ts$")
+          end, result)
+          
+          if #filtered_result == 1 then
+            vim.lsp.util.jump_to_location(filtered_result[1], "utf-8")
+          else
+            vim.lsp.util.set_qflist(vim.lsp.util.locations_to_items(filtered_result, "utf-8"))
+            vim.api.nvim_command("copen")
+          end
+        else
+          vim.lsp.buf.definition()
+        end
+      end)
+    end
     vim.api.nvim_create_autocmd("LspAttach", {
       group = vim.api.nvim_create_augroup("UserLspConfig", {}),
       callback = function(ev)
@@ -27,20 +47,17 @@ return {
 
         -- set keybinds
         opts.desc = "Show LSP references"
-        keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts) -- show definition, references
+        keymap.set("n", "gr", "<cmd>Telescope lsp_references<CR>", opts) -- show definition, references
 
         opts.desc = "Go to declaration"
         keymap.set("n", "gD", vim.lsp.buf.declaration, opts) -- go to declaration
 
         opts.desc = "Show LSP definitions"
-        keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts) -- show lsp definitions
-
-        opts.desc = "Show LSP implementations"
+                keymap.set('n', 'gd', '<cmd>lua CustomGoToDefinition()<CR>', {noremap = true, silent = true})opts.desc = "Show LSP implementations"
         keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts) -- show lsp implementations
 
         opts.desc = "Show LSP type definitions"
-        keymap.set("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", opts) -- show lsp type definitions
-
+        keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', {noremap = true, silent = true})
         opts.desc = "See available code actions"
         keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection
 
@@ -72,7 +89,7 @@ return {
 
     -- Change the Diagnostic symbols in the sign column (gutter)
     -- (not in youtube nvim video)
-    local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
+    local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
     for type, icon in pairs(signs) do
       local hl = "DiagnosticSign" .. type
       vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
@@ -99,10 +116,79 @@ return {
                 callSnippet = "Replace",
               },
             },
+
+
+          },
+        })
+      end,
+      ["tsserver"] = function()
+        lspconfig["tsserver"].setup({
+          capabilities = capabilities,
+          settings = {
+            typescript = {
+              inlayHints = {
+                includeInlayParameterNameHints = "all",
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = true,
+                includeInlayPropertyDeclarationTypeHints = true,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayEnumMemberValueHints = true,
+              },
+            },
+            javascript = {
+              inlayHints = {
+                includeInlayParameterNameHints = "all",
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = true,
+                includeInlayPropertyDeclarationTypeHints = true,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayEnumMemberValueHints = true,
+              },
+            },
+          },
+        })
+      end,
+      ["gopls"] = function()
+        -- configure golang server (with special settings)
+        lspconfig["gopls"].setup({
+          capabilities = capabilities,
+          settings = {
+            gopls = {
+              analyses = {
+                unusedparams = true,
+              },
+              staticcheck = true,
+              gofumpt = true,
+            },
           },
         })
       end,
     })
+
+    -- Add the autocmd for formatting Go files
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      pattern = { "*.go", "*.ts", "*.tsx", "*.lua", "*.js" },
+      callback = function()
+        vim.lsp.buf.format({ async = false })
+      end,
+    })
+
+
+
+    vim.keymap.set("n", "<leader>li", function()
+      -- Remove unused imports
+      vim.lsp.buf.code_action({
+        context = { only = { "source.removeUnusedImports" } },
+        apply = true,
+      })
+
+      -- Add missing imports
+      vim.lsp.buf.code_action({
+        context = { only = { "source.addMissingImports" } },
+        apply = true,
+      })
+    end, { desc = "Organize Imports and Format" })
   end,
 }
-

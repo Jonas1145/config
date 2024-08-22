@@ -4,7 +4,6 @@ local opt = vim.opt
 
 opt.relativenumber = true
 opt.number = true
-
 -- tabs & indentation
 opt.tabstop = 2 -- 2 spaces for tabs (prettier default)
 opt.shiftwidth = 2 -- 2 spaces for indent width
@@ -43,3 +42,13 @@ vim.api.nvim_create_autocmd("VimEnter", {
     vim.cmd("NvimTreeClose")
   end
 })
+-- Highlight yanked text
+local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
+vim.api.nvim_create_autocmd('TextYankPost', {
+  group = highlight_group,
+  pattern = '*',
+  callback = function()
+    vim.highlight.on_yank { higroup = 'IncSearch', timeout = 200 }
+  end,
+})
+
