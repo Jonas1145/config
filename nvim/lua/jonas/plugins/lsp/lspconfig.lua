@@ -16,28 +16,9 @@ return {
     -- import cmp-nvim-lsp plugin
     local cmp_nvim_lsp = require("cmp_nvim_lsp")
 
-    local keymap = vim.keymap              -- for conciseness
+    local keymap = vim.keymap -- for conciseness
 
-    local function CustomGoToDefinition()
-      local params = vim.lsp.util.make_position_params()
-      
-      vim.lsp.buf_request(0, 'textDocument/definition', params, function(err, result, ctx, config)
-        if result then
-          local filtered_result = vim.tbl_filter(function(item)
-            return not string.match(item.targetUri or item.uri, "index%.d%.ts$")
-          end, result)
-          
-          if #filtered_result == 1 then
-            vim.lsp.util.jump_to_location(filtered_result[1], "utf-8")
-          else
-            vim.lsp.util.set_qflist(vim.lsp.util.locations_to_items(filtered_result, "utf-8"))
-            vim.api.nvim_command("copen")
-          end
-        else
-          vim.lsp.buf.definition()
-        end
-      end)
-    end
+
     vim.api.nvim_create_autocmd("LspAttach", {
       group = vim.api.nvim_create_augroup("UserLspConfig", {}),
       callback = function(ev)
@@ -52,12 +33,9 @@ return {
         opts.desc = "Go to declaration"
         keymap.set("n", "gD", vim.lsp.buf.declaration, opts) -- go to declaration
 
-        opts.desc = "Show LSP definitions"
-                keymap.set('n', 'gd', '<cmd>lua CustomGoToDefinition()<CR>', {noremap = true, silent = true})opts.desc = "Show LSP implementations"
-        keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts) -- show lsp implementations
 
         opts.desc = "Show LSP type definitions"
-        keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', {noremap = true, silent = true})
+        keymap.set('n', 'fd', '<cmd>lua vim.lsp.buf.definition()<CR>', { noremap = true, silent = true })
         opts.desc = "See available code actions"
         keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection
 
@@ -67,14 +45,12 @@ return {
         opts.desc = "Show buffer diagnostics"
         keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts) -- show  diagnostics for file
 
-        opts.desc = "Show line diagnostics"
-        keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts) -- show diagnostics for line
 
         opts.desc = "Go to previous diagnostic"
         keymap.set("n", "[d", vim.diagnostic.goto_prev, opts) -- jump to previous diagnostic in buffer
 
         opts.desc = "Go to next diagnostic"
-        keymap.set("n", "]d", vim.diagnostic.goto_next, opts) -- jump to next diagnostic in buffer
+        keymap.set("n", "<leader>d", vim.diagnostic.goto_next, opts) -- jump to next diagnostic in buffer
 
         opts.desc = "Show documentation for what is under cursor"
         keymap.set("n", "K", vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
@@ -175,20 +151,17 @@ return {
       end,
     })
 
-
-
     vim.keymap.set("n", "<leader>li", function()
-      -- Remove unused imports
+      -- Get all code actions
       vim.lsp.buf.code_action({
-        context = { only = { "source.removeUnusedImports" } },
-        apply = true,
+        filter = function(action)
+          return action.title == "Organize Imports"
+        end,
+        apply = true
       })
 
-      -- Add missing imports
-      vim.lsp.buf.code_action({
-        context = { only = { "source.addMissingImports" } },
-        apply = true,
-      })
+      -- Format the buffer
+      vim.lsp.buf.format({ async = false })
     end, { desc = "Organize Imports and Format" })
   end,
 }

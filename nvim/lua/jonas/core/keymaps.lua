@@ -4,9 +4,12 @@ local keymap = vim.keymap -- for conciseness
 
 keymap.set("i", "jk", "<ESC>", { desc = "Exit insert mode with jk" })
 keymap.set({ "i", "n" }, "<C-q>", "<cmd>q!<CR>", { desc = "Quit" })
-keymap.set({ "i", "n" }, "<C-w>", "<Esc><cmd>w<CR>", { desc = "Save" })
+keymap.set("i", "ö", "<Esc>", { desc = "go to normal mode " })
+keymap.set("i", "Ö", "ö", { desc = "Save" })
 keymap.set("n", "<leader>nh", ":nohl<CR>", { desc = "Clear search highlights" })
-
+keymap.set("n", "<leader>q", ":q<CR>", { desc = "Quit" })
+keymap.set("n", "<leader>Q", ":q!<CR>", { desc = "Quit without saving" })
+keymap.set("n", "<leader>w", ":w<CR>", { desc = "Save" })
 -- increment/decrement numbers
 keymap.set("n", "<leader>+", "<C-a>", { desc = "Increment number" }) -- increment
 keymap.set("n", "<leader>-", "<C-x>", { desc = "Decrement number" }) -- decrement
