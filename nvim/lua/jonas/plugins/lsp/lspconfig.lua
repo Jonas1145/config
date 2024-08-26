@@ -145,7 +145,7 @@ return {
 
     -- Add the autocmd for formatting Go files
     vim.api.nvim_create_autocmd("BufWritePre", {
-      pattern = { "*.go", "*.ts", "*.tsx", "*.lua", "*.js" },
+      pattern = { "*.go", "*.lua" },
       callback = function()
         vim.lsp.buf.format({ async = false })
       end,

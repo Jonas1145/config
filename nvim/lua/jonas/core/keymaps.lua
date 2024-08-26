@@ -10,6 +10,7 @@ keymap.set("n", "<leader>nh", ":nohl<CR>", { desc = "Clear search highlights" })
 keymap.set("n", "<leader>q", ":q<CR>", { desc = "Quit" })
 keymap.set("n", "<leader>Q", ":q!<CR>", { desc = "Quit without saving" })
 keymap.set("n", "<leader>w", ":w<CR>", { desc = "Save" })
+keymap.set("n", "<leader>wq", ":wq!<CR>", { desc = "Save" })
 -- increment/decrement numbers
 keymap.set("n", "<leader>+", "<C-a>", { desc = "Increment number" }) -- increment
 keymap.set("n", "<leader>-", "<C-x>", { desc = "Decrement number" }) -- decrement
@@ -37,7 +38,9 @@ vim.keymap.set("n", "N", "Nzzzv")
 
 -- custom
 vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
+vim.keymap.set({ "n", "v" }, "<leader>vy", [[V"+y]])
 vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]])
 vim.keymap.set("i", "<C-c>", "<Esc>")
 vim.keymap.set("n", "Q", "<nop>")
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+
