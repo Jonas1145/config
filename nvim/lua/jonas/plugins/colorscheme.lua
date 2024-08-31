@@ -1,5 +1,6 @@
 return {
-  "sainnhe/everforest",
+  -- "sainnhe/everforest",
+  "folke/tokyonight.nvim",
   priority = 1000,
   config = function()
     local transparent = false -- set to true if you would like to enable transparency
@@ -40,7 +41,8 @@ return {
     --   end,
     -- })
     --
-    vim.cmd("colorscheme everforest")
+    -- vim.cmd("colorscheme everforest")
+    vim.cmd("colorscheme tokyonight")
     vim.g.everforest_background = 'soft'
     vim.g.everforest_better_performance = 1
   end,

@@ -16,6 +16,7 @@ return {
       vim.keymap.set("n", "ös", function() harpoon:list():select(1) end)
       vim.keymap.set("n", "öd", function() harpoon:list():select(2) end)
       vim.keymap.set("n", "öf", function() harpoon:list():select(3) end)
+      vim.keymap.set("n", "ög", function() harpoon:list():select(4) end)
 
       -- Toggle previous & next buffers stored within Harpoon list
       vim.keymap.set("n", "öp", function() harpoon:list():prev() end)

@@ -4,11 +4,9 @@ local keymap = vim.keymap -- for conciseness
 
 keymap.set("i", "jk", "<ESC>", { desc = "Exit insert mode with jk" })
 keymap.set({ "i", "n" }, "<C-q>", "<cmd>q!<CR>", { desc = "Quit" })
-keymap.set("i", "ö", "<Esc>", { desc = "go to normal mode " })
-keymap.set("i", "Ö", "ö", { desc = "Save" })
 keymap.set("n", "<leader>nh", ":nohl<CR>", { desc = "Clear search highlights" })
-keymap.set("n", "<leader>q", ":q<CR>", { desc = "Quit" })
-keymap.set("n", "<leader>Q", ":q!<CR>", { desc = "Quit without saving" })
+keymap.set("n", "<leader>q", ":q!<CR>", { desc = "Quit" })
+keymap.set("n", "<leader>Q", ":qa!<CR>", { desc = "Quit without saving" })
 keymap.set("n", "<leader>w", ":w<CR>", { desc = "Save" })
 keymap.set("n", "<leader>wq", ":wq!<CR>", { desc = "Save" })
 -- increment/decrement numbers
@@ -44,3 +42,8 @@ vim.keymap.set("i", "<C-c>", "<Esc>")
 vim.keymap.set("n", "Q", "<nop>")
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 
+
+keymap.set("n", "<C-h>", "<C-w>h")
+keymap.set("n", "<C-j>", "<C-w>j")
+keymap.set("n", "<C-k>", "<C-w>k")
+keymap.set("n", "<C-l>", "<C-w>l")
