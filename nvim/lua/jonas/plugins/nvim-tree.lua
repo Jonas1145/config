@@ -35,6 +35,7 @@ return {
           window_picker = {
             enable = false,
           },
+          quit_on_open = true
         },
       },
       filters = {
@@ -46,7 +47,7 @@ return {
     })
 
     -- set keymaps
-    local keymap = vim.keymap -- for conciseness
+    local keymap = vim.keymap                                                                                          -- for conciseness
 
     keymap.set("n", "<leader>e", "<cmd>NvimTreeFindFileToggle<cr>", { desc = "toggle file explorer on current file" }) -- toggle file explorer on current file
     -- keymap.set("n", "<leader>ee", "<cmd>nvimtreetoggle<cr>", { desc = "toggle file explorer" }) -- toggle file explorer

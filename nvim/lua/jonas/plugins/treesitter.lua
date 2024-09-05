@@ -52,6 +52,22 @@ return {
           node_decremental = "<bs>",
         },
       },
+      textobject = {
+        select = {
+          enable = true,
+          lookahead = true,
+       },
+        keymaps = {
+          ["if"] = {
+            select = "@function.outer",
+            move = "@function.outer",
+          },
+          ["af"] = {
+            select = "@function.inner",
+            move = "@function.inner",
+          },
+        },
+      },
     })
   end,
 }
