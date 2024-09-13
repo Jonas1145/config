@@ -4,13 +4,14 @@ return {
   build = ":TSUpdate",
   dependencies = {
     "windwp/nvim-ts-autotag",
+    "nvim-treesitter/nvim-treesitter-textobjects", -- Add this line
   },
   config = function()
     -- import nvim-treesitter plugin
     local treesitter = require("nvim-treesitter.configs")
-
     -- configure treesitter
-    treesitter.setup({ -- enable syntax highlighting
+    treesitter.setup({
+      -- enable syntax highlighting
       highlight = {
         enable = true,
       },
@@ -29,19 +30,12 @@ return {
         "yaml",
         "html",
         "css",
-        "prisma",
         "markdown",
         "markdown_inline",
-        "svelte",
-        "graphql",
         "bash",
         "lua",
         "vim",
-        "dockerfile",
         "gitignore",
-        "query",
-        "vimdoc",
-        "c",
       },
       incremental_selection = {
         enable = true,
@@ -52,22 +46,27 @@ return {
           node_decremental = "<bs>",
         },
       },
-      textobject = {
+      textobjects = { -- Move this entire block here
         select = {
           enable = true,
           lookahead = true,
-       },
-        keymaps = {
-          ["if"] = {
-            select = "@function.outer",
-            move = "@function.outer",
+          keymaps = { -- Correct the structure here
+            ["af"] = "@function.outer",
+            ["if"] = "@function.inner",
           },
-          ["af"] = {
-            select = "@function.inner",
-            move = "@function.inner",
+        },
+        move = {
+          enable = true,
+          set_jumps = true,
+          goto_next_start = {
+            ["]f"] = "@function.outer",
+          },
+          goto_previous_start = {
+            ["[f"] = "@function.outer",
           },
         },
       },
     })
   end,
 }
+
