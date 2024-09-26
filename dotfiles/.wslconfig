@@ -1,0 +1,5 @@
+[wsl2]
+memory=22GB              # Limits VM memory in WSL 2 to 4 GB
+processors=6           # Limits WSL 2 to 2 virtual processors
+swap=0                   # Disables swap file in WSL 2
+localhostForwarding=true # Enables localhost forwarding

@@ -70,4 +70,19 @@ eval "$(zoxide init zsh)"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+# Autostart tmux
+if [ -z "$TMUX" ]; then
+  # Checks if tmux is installed
+  if command -v tmux &> /dev/null; then
+    # Checks if a tmux session exists
+    if tmux has-session 2>/dev/null; then
+      # Attaches to existing session
+      exec tmux attach
+    else
+      # Creates a new session
+      exec tmux 
+    fi
+  else
+    echo "tmux is not installed. You can install it with your package manager."
+  fi
+fi
