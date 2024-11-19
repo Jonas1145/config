@@ -151,17 +151,81 @@ return {
       end,
     })
 
-    vim.keymap.set("n", "<leader>li", function()
-      -- Get all code actions
-      vim.lsp.buf.code_action({
-        filter = function(action)
-          return action.title == "Organize Imports"
-        end,
-        apply = true
-      })
 
-      -- Format the buffer
-      vim.lsp.buf.format({ async = false })
-    end, { desc = "Organize Imports and Format" })
+
+    -- Function to remove unused imports
+    local function remove_unused_imports(callback)
+      vim.lsp.buf.code_action({
+        context = { only = { 'source.removeUnusedImports' } },
+        apply = true,
+        callback = function(err, res)
+          if err then
+            callback(err)
+          elseif not res or #res == 0 then
+            callback()
+          else
+            callback()
+          end
+        end
+      })
+    end
+
+    -- Function to add missing imports
+    local function add_missing_imports(callback)
+      vim.lsp.buf.code_action({
+        context = { only = { 'source.addMissingImports' } },
+        apply = true,
+        callback = function(err, res)
+          if err then
+            callback(err)
+          elseif not res or #res == 0 then
+            callback()
+          else
+            callback()
+          end
+        end
+      })
+    end
+
+    -- Function to organize imports
+    local function organize_imports(callback)
+      vim.lsp.buf.execute_command({
+        command = "_typescript.organizeImports",
+        arguments = { vim.api.nvim_buf_get_name(0) }
+      })
+    end
+
+    -- Main function to execute all import-related actions
+    local function execute_import_actions()
+      local function execute_next(actions, index)
+        if index > #actions then
+          vim.notify("Imports organized and formatted successfully", vim.log.levels.INFO)
+          return
+        end
+        local action = actions[index]
+        action(function(err)
+          if err then
+            vim.notify("Error in import organization: " .. tostring(err), vim.log.levels.ERROR)
+            return
+          end
+          execute_next(actions, index + 1)
+        end)
+      end
+
+      local actions = {
+        remove_unused_imports,
+        add_missing_imports,
+        organize_imports
+      }
+
+      execute_next(actions, 1)
+    end
+
+    -- Set up the keymapping
+    vim.keymap.set("n", "<leader>li", execute_import_actions, { desc = "Organize Imports and Format" })
+    vim.keymap.set("n", "<leader>la", add_missing_imports, { desc = "add missing imports" })
+
+    -- Optionally, create a command for this function
+    vim.api.nvim_create_user_command('OrganizeImports', execute_import_actions, {})
   end,
 }

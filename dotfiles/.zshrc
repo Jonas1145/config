@@ -86,3 +86,11 @@ if [ -z "$TMUX" ]; then
     echo "tmux is not installed. You can install it with your package manager."
   fi
 fi
+
+# pnpm
+export PNPM_HOME="/home/u27e51/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
