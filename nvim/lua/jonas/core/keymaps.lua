@@ -69,15 +69,11 @@ map("n", "<C-h>", "<C-w>h")
 map("n", "<C-j>", "<C-w>j")
 map("n", "<C-k>", "<C-w>k")
 
-map("i", "<C-b>", "<ESC>^i", { desc = "move beginning of line" })
-map("i", "<C-e>", "<End>", { desc = "move end of line" })
 map("i", "<C-h>", "<Left>", { desc = "move left" })
 map("i", "<C-l>", "<Right>", { desc = "move right" })
 map("i", "<C-j>", "<Down>", { desc = "move down" })
 map("i", "<C-k>", "<Up>", { desc = "move up" })
 
-map('i', '<C-w>', '<C-Right>', { noremap = true, desc = 'Move forward one word' })
-map('i', '<C-b>', '<C-Left>', { noremap = true, desc = 'Move backward one word' })
 
 -- Jump to line ends
 map('i', '<C-e>', '<End>', { noremap = true, desc = 'Jump to line end' })
