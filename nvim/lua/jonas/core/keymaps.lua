@@ -3,14 +3,13 @@ vim.g.mapleader = " "
 local map = vim.keymap.set
 
 
-map({ "i", "n" }, "<C-q>", "<cmd>q!<CR>", { desc = "Quit" })
-map("n", "<leader>nh", ":nohl<CR>", { desc = "Clear search highlights" })
+map("n", "<leader>nh", vim.cmd.nohlsearch, { desc = "Clear search highlights" })
 map("n", "<leader>q", ":q!<CR>", { desc = "Quit" })
 map("n", "<leader>Q", ":qa!<CR>", { desc = "Quit without saving" })
 map("n", "<leader>w", ":w<CR>", { desc = "Save" })
 -- increment/decrement numbers
-map("n", "<leader>+", "<C-a>", { desc = "Increment number" }) -- increment
-map("n", "<leader>-", "<C-x>", { desc = "Decrement number" }) -- decrement
+map("n", "<C-ö>", "<C-a>", { desc = "Increment number" }) -- increment
+map("n", "<C-ü>", "<C-x>", { desc = "Decrement number" }) -- decrement
 
 -- window management
 map("n", "<leader>sv", "<C-w>v", { desc = "Split window vertically" })                   -- split window vertically
@@ -23,15 +22,26 @@ map("n", "<leader>tx", "<cmd>tabclose<CR>", { desc = "Close current tab" })     
 map("n", "<leader>tn", "<cmd>tabn<CR>", { desc = "Go to next tab" })                     --  go to next tab
 map("n", "<leader>tp", "<cmd>tabp<CR>", { desc = "Go to previous tab" })                 --  go to previous tab
 map("n", "<leader>tf", "<cmd>tabnew %<CR>", { desc = "Open current buffer in new tab" }) --  move current buffer to new tab
+
 map("n", "<leader>a", "ggVG")
 map({ "n", "v" }, "<C-v>", '"+p')
+
 map({ "n", "v" }, "<leader>b", "<C-^>")
+map({ "n", "v" }, "<leader>v", "<C-^>")
 
 -- primagen
 map("n", "<C-d>", "<C-d>zz")
 map("n", "<C-u>", "<C-u>zz")
 map("n", "n", "nzzzv")
 map("n", "N", "Nzzzv")
+
+
+map("n", "<PageDown>", "<C-d>zz")
+map("n", "<PageUp>", "<C-u>zz")
+
+
+map("n", "<leader>o", "m`o<Esc>``", { desc = "New line below without insert" })
+map("n", "<leader>O", "m`O<Esc>``", { desc = "New line above without insert" })
 
 -- custom
 map({ "n", "v" }, "<leader>y", [["+y]])
@@ -64,20 +74,19 @@ map("n", "<leader>tb", function()
   end
 end, { desc = "Toggle background (default/black/transparent)" })
 
-map("n", "<C-h>", "<C-w>h")
-map("n", "<C-h>", "<C-w>h")
-map("n", "<C-j>", "<C-w>j")
-map("n", "<C-k>", "<C-w>k")
 
-map("i", "<C-h>", "<Left>", { desc = "move left" })
-map("i", "<C-l>", "<Right>", { desc = "move right" })
-map("i", "<C-j>", "<Down>", { desc = "move down" })
-map("i", "<C-k>", "<Up>", { desc = "move up" })
 
 
 -- Jump to line ends
 map('i', '<C-e>', '<End>', { noremap = true, desc = 'Jump to line end' })
 map('i', '<C-a>', '<Home>', { noremap = true, desc = 'Jump to line start' })
+
+
+
+map("n", "<leader>tln", function()
+  vim.wo.number = not vim.wo.number
+  vim.wo.relativenumber = not vim.wo.relativenumber
+end, { desc = "Toggle line numbers" })
 
 
 -- Open floating terminal
